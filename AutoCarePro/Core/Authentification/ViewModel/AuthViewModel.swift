@@ -10,7 +10,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestoreCombineSwift
 
-protocol AuthenticationFormProtocol {                       // test comment
+protocol AuthenticationFormProtocol {           // test comment
     var formIsValid: Bool { get }
 }
 
