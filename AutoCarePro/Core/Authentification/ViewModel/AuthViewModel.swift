@@ -10,7 +10,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestoreCombineSwift
 
-protocol AuthenticationFormProtocol {           // test comment
+protocol AuthenticationFormProtocol {
     var formIsValid: Bool { get }
 }
 
@@ -34,6 +34,7 @@ class AuthViewModel: ObservableObject {
             await fetchUser()
         } catch {
             print("DEBUG: Failed to log in with error \(error.localizedDescription)")
+            throw error // rethrow the error to handle in the view
         }
     }
     
@@ -43,10 +44,17 @@ class AuthViewModel: ObservableObject {
             self.userSession = result.user
             let user = User(id: result.user.uid, fullname: fullname, email: email)
             let encodedUser = try Firestore.Encoder().encode(user)                          // encodes user data
-            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)  // uploads data to firebase
-            await fetchUser()       // after uploading data, need to fetch to display on screen
+            
+            do {
+                try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)  // uploads data to firebase
+                await fetchUser()       // after uploading data, need to fetch to display on screen
+            } catch {
+                print("DEBUG: Failed to upload user data to Firestore with error \(error.localizedDescription)")
+                throw error
+            }
         } catch {
             print("DEBUG: Failed to create user with error \(error.localizedDescription)")
+            throw error
         }
     }
     

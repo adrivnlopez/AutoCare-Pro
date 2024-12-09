@@ -70,10 +70,18 @@ struct ProfileView: View {
 
                 }
             }
+            
+        }
+        else {
+            Text("No user data avaialble. Please log in.")
+                .foregroundColor(.gray)
+                .font(.headline)
         }
     }
 }
 
-#Preview {
-    ProfileView()
+struct ProfileView_Previews: PreviewProvider {
+    static var previews: some View {
+        ProfileView()
+    }
 }
